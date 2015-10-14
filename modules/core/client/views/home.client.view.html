@@ -1,0 +1,62 @@
+<section ng-controller="HomeController">
+  <div class="jumbotron text-center">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
+        <img alt="Oracle DB Package Manager" class="img-responsive text-center"
+             src="modules/core/client/img/brand/logo.png"/>
+      </div>
+    </div>
+    <br>
+
+    <div class="row">
+      <p class="lead">
+        Open-Source Oracle DB Package Manager
+      </p>
+    </div>
+    <div class="row">
+      <p>
+        <a class="btn btn-primary btn-lg" href="https://github.com/s-oravec/oradbpm-repo" target="_blank">Learn more</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="row text-center col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
+
+    <h2>Search Oracle DB Package Repository</h2>
+
+    <form class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search for ..." ng-model="searchForm.searchPhrase">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" ng-click="search(searchForm.searchPhrase)">Go!</button>
+      </span>
+      </div>
+    </form>
+
+  </div>
+
+  <div class="borderless-list list-group row col-xs-12" ng-init="findSome()">
+    <a ng-repeat="oradbpackage in oradbpackages" class="list-group-item"
+       ui-sref="oradbpackages.view({oradbpackageId: oradbpackage._id})">
+      <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default pull-right">{{keyword}}</span>
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
+        by
+        <span ng-bind="oradbpackage.author"></span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="oradbpackage.name"></h4>
+
+      <p class="list-group-item-text" ng-bind="oradbpackage.description"></p>
+    </a>
+  </div>
+
+
+  <div class="row text-center col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
+    <hr>
+    <small>
+      This site is licenced under MIT License | Copyright (c) 2015 Štefan Oravec
+    </small>
+  </div>
+
+</section>

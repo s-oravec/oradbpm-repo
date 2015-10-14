@@ -1,0 +1,14 @@
+<section ng-controller="oradbpackagesController" ng-init="findOne()">
+  <div class="page-header">
+    <h1 ng-bind="oradbpackage.name"></h1>
+  </div>
+  <small>
+    <em class="text-muted">
+      Created on
+      <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
+      by
+      <span ng-bind="oradbpackage.author"></span>
+    </em>
+  </small>
+  <p class="lead" ng-bind="oradbpackage.description"></p>
+</section>

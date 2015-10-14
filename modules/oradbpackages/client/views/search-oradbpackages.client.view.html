@@ -1,0 +1,37 @@
+<section ng-controller="oradbpackagesController" ng-init="find()">
+  <div class="page-header">
+    <h1>Search results</h1>
+  </div>
+
+  <div class="list-group">
+    <form>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search for ..." ng-model="searchForm.searchPhrase">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" ng-click="search()">Go!</button>
+      </span>
+      </div>
+    </form>
+  </div>
+
+  <!-- todo: refactor and reuse -->
+  <div class="list-group borderless-list">
+    <a ng-repeat="oradbpackage in oradbpackages" ui-sref="oradbpackages.view({oradbpackageId: oradbpackage._id})" class="list-group-item">
+      <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default pull-right">{{keyword}}</span>
+      <small class="list-group-item-text">
+        Created on
+        <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
+        by
+        <span ng-bind="oradbpackage.author"></span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="oradbpackage.name"></h4>
+      <p class="list-group-item-text" ng-bind="oradbpackage.description"></p>
+    </a>
+  </div>
+
+  <!-- TODO: CTA for download OraRBPM-CLI -->
+  <!--<div class="alert alert-warning text-center" ng-if="oradbpackages.$resolved && !oradbpackages.length">
+    You have no packages, why don't you <a ui-sref="oradbpackages.create">create one</a>?
+  </div>-->
+
+</section>
