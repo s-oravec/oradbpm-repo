@@ -15,8 +15,9 @@ module.exports = function (app) {
   // Single oradbpackage routes
   app.route('/api/1/packages/:name').all(oradbpackagesPolicy.isAllowed)
     .get(oradbpackages.read)
-    .put(oradbpackages.update)
-    .delete(oradbpackages.delete);
+    //.put(oradbpackages.update)
+    //.delete(oradbpackages.delete)
+  ;
 
   // Finish by binding the oradbpackage middleware
   app.param('name', oradbpackages.pkgByName);

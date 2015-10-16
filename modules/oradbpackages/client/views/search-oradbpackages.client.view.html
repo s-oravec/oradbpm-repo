@@ -1,22 +1,23 @@
-<section ng-controller="oradbpackagesController" ng-init="find()">
+<section data-ng-controller="oradbpackagesController" data-ng-init="find()">
   <div class="page-header">
     <h1>Search results</h1>
   </div>
 
-  <div class="list-group">
-    <form>
+  <form class="form-group">
+    <div class="list-group">
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search for ..." ng-model="searchForm.searchPhrase">
+        <input type="text" class="form-control" placeholder="Search for ..." data-ng-model="searchForm.searchPhrase">
+      <!--TODO: type ahead-->
       <span class="input-group-btn">
-        <button class="btn btn-default" type="submit" ng-click="search()">Go!</button>
+        <button class="btn btn-default" type="submit" data-ng-click="search(searchForm.searchPhrase)">Go!</button>
       </span>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 
-  <!-- todo: refactor and reuse -->
   <div class="list-group borderless-list">
-    <a ng-repeat="oradbpackage in oradbpackages" ui-sref="oradbpackages.view({name: oradbpackage.name})" class="list-group-item">
+    <a data-ng-repeat="oradbpackage in oradbpackages" ui-sref="oradbpackages.view({name: oradbpackage.name})"
+       class="list-group-item">
       <ora-db-package-list-item ng-model="oradbpackage">
       </ora-db-package-list-item>
     </a>

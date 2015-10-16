@@ -213,9 +213,9 @@ exports.delete = function (req, res) {
  */
 exports.list = function (req, res) {
 
-  if (!!req.query.searchPhrase) {
+  if (!!req.query.q) {
 
-    OraDBPackage.textSearch(req.query.searchPhrase, {lean: true}, function (err, output) {
+    OraDBPackage.textSearch(req.query.q, {lean: true}, function (err, output) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)

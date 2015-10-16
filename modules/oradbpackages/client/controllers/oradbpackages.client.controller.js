@@ -12,7 +12,7 @@ angular.module('oradbpackages').controller('oradbpackagesController', ['$scope',
     // Find a list of oradbpackages
     $scope.find = function () {
       $scope.oradbpackages = OraDBPackages.query(
-        {searchPhrase: $stateParams.searchPhrase}
+        {q: $stateParams.searchPhrase}
       );
     };
 
@@ -24,10 +24,9 @@ angular.module('oradbpackages').controller('oradbpackagesController', ['$scope',
       });
     };
 
-    $scope.search = function () {
-      console.log($scope.searchForm.searchPhrase);
+    $scope.search = function (searchPhrase) {
       $state.go('oradbpackagesSearch', {
-        searchPhrase: $scope.searchForm.searchPhrase
+        searchPhrase: searchPhrase
       });
     };
 
