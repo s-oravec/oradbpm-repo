@@ -1,14 +1,73 @@
 <section ng-controller="oradbpackagesController" ng-init="findOne()">
-  <div class="page-header">
-    <h1 ng-bind="oradbpackage.name"></h1>
+
+  <div class="page-header col-sm-12">
+    <div class="col-md-8">
+      <h1 ng-bind="oradbpackage.name">
+      </h1>
+    </div>
+
+    <div class="col-md-4">
+      <div class="pull-right bottom-right">
+        <code>
+          <b class="glyphicon glyphicon-download-alt"></b>
+          oradbpm install {{oradbpackage.name}}
+        </code><br>
+        <a href="{{oradbpackage.repository.url}}">repository</a>
+      </div>
+    </div>
   </div>
-  <small>
-    <em class="text-muted">
-      Created on
-      <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
-      by
-      <span ng-bind="oradbpackage.author"></span>
-    </em>
-  </small>
-  <p class="lead" ng-bind="oradbpackage.description"></p>
+
+
+  <div class="col-md-8 col-sm-8 col-xs-12">
+
+    <p class="lead" ng-bind="oradbpackage.description"></p>
+
+    <p ng-if="oradbpackage.notes">
+      Release Notes:
+    </p>
+
+    <p>Maintainers:
+      <span data-ng-repeat="maintainter in oradbpackage.maintainers"
+            class="label label-default">{{maintainter}}</span><br>
+    </p>
+
+    <p>License:
+      <span class="text-danger">{{oradbpackage.license}}</span>
+    </p>
+
+  </div>
+
+  <div class="col-md-4 col-sm-4 col-xs-12 pull-right">
+
+    <div class="user-header-dropdown-toggle">
+      <img ng-src="{{authentication.user.profileImageURL}}" alt="{{authentication.user.displayName}}"
+           class="header-profile-image"/>
+      <span ng-bind="authentication.user.displayName"></span><br>
+      published <span am-time-ago="oradbpackage.time.modified"></span>
+    </div>
+
+    <p>
+      <span class="h4">Version:<br>
+        <span class="small">
+          <span class="text-danger">{{oradbpackage.version}}</span>
+          is the latest of {{oradbpackage.versions.length}} releases
+        </span>
+      </span>
+    </p>
+
+    <p>
+      <span class="h4">Tags:<br>
+      <span ng-repeat="tag in oradbpackage.tags" class="label label-default"
+            style="margin-left: 2px">{{tag}}</span>
+      </span>
+    </p>
+
+    <p>
+      <span class="h4">Keywords:<br>
+        <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default"
+              style="margin-left: 2px">{{keyword}}</span>
+      </span>
+    </p>
+  </div>
+
 </section>

@@ -38,19 +38,10 @@
   <div class="borderless-list list-group row col-xs-12" ng-init="findSome()">
     <a ng-repeat="oradbpackage in oradbpackages" class="list-group-item"
        ui-sref="oradbpackages.view({oradbpackageId: oradbpackage._id})">
-      <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default pull-right">{{keyword}}</span>
-      <small class="list-group-item-text">
-        Posted on
-        <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
-        by
-        <span ng-bind="oradbpackage.author"></span>
-      </small>
-      <h4 class="list-group-item-heading" ng-bind="oradbpackage.name"></h4>
-
-      <p class="list-group-item-text" ng-bind="oradbpackage.description"></p>
+      <ora-db-package-list-item ng-model="oradbpackage">
+      </ora-db-package-list-item>
     </a>
   </div>
-
 
   <div class="row text-center col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
     <hr>

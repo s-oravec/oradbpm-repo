@@ -5,6 +5,7 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
+  semver = require('semver'),
   Bluebird = require("bluebird"),
   mongooseAsync = Bluebird.promisifyAll(require("mongoose")),
   _ = require('lodash'),
@@ -14,12 +15,12 @@ var path = require('path'),
 
 // TODO: refactor - move to utils
 var encodeKey = function (key) {
-  return key.replace(/\./g, '\\0024').replace(/\$/g, '\\002e').replace(/\\/g, '\\\\');
+  return key.replace(/\./g, '\uff0e').replace(/\$/g, '\uff04').replace(/\\/g, '\\\\');
 };
 
 // TODO: refactor - move to utils
 var decodeKey = function (key) {
-  return key.replace(/\\0024/g, '.').replace(/\\002e/g, '$').replace(/\\\\/g, '\\');
+  return key.replace(/\uff0e/g, '.').replace(/\uff04/g, '$').replace(/\\\\/g, '\\');
 };
 
 // TODO: refactor - move to utils
@@ -41,7 +42,7 @@ var createPackageVersion = function (req) {
   pkgVersion.notes = req.body.notes;
   pkgVersion.publisherId = req.user._id;
   pkgVersion.publisher = req.user.getUsernameEmail();
-  // pkgVersion.created = Date.now();
+  pkgVersion.created = Date.now();
 
   var promise = Bluebird.resolve();
 
@@ -63,17 +64,15 @@ var createPackage = function (req, pkgVersion) {
   pkg.versions = [
     req.body.version
   ];
-  //TODO: validate against users
-  pkg.maintainers = req.body.maintainers || [req.user.getUsernameEmail()];
+  pkg.maintainers = [req.user.getUsernameEmail()];
   pkg.time = {
     modified: pkgVersion.created,
     created: pkgVersion.created
   };
-  console.log(encodeKey(req.body.version));
   pkg.time[encodeKey(req.body.version)] = pkgVersion.created;
   pkg.author = req.user.getFullnameEmail();
   pkg.authorId = req.user._id;
-  // validate repository type & url
+  // TODO: validate repository type & url
   pkg.repository = {
     type: "git",
     url: req.body.repository.url
@@ -91,14 +90,11 @@ var createPackage = function (req, pkgVersion) {
 var updatePackage = function (req, pkg, pkgVersion) {
 
   pkg.description = req.body.description;
-  //TODO: resort array > use semver
   pkg.versions.push(req.body.version);
-  //TODO: validate against users
-  pkg.maintainers = req.body.maintainers || [req.user.getUsernameEmail()];
+  pkg.versions.sort(semver.compare);
   pkg.time.modified = pkgVersion.created;
   pkg.time[encodeKey(req.body.version)] = pkgVersion.created;
   pkg.markModified('time');
-  //TODO: validate repository type & url - move to client
   pkg.tags.latest = req.body.version;
   pkg.markModified('tags');
   pkg.repository = {
@@ -248,20 +244,13 @@ exports.list = function (req, res) {
 /**
  * pkg middleware
  */
-exports.pkgByID = function (req, res, next, id) {
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send({
-      message: 'Package id is invalid'
-    });
-  }
-
-  OraDBPackage.findById(id).exec(function (err, pkg) {
+exports.pkgByName = function (req, res, next, name) {
+  OraDBPackage.findOne({name : name}).exec(function (err, pkg) {
     if (err) {
       return next(err);
     } else if (!pkg) {
       return res.status(404).send({
-        message: 'No package with that identifier has been found'
+        message: 'No package with that name has been found'
       });
     }
     req.pkg = pkg;

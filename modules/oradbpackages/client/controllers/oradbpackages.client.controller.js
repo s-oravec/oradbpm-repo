@@ -18,8 +18,9 @@ angular.module('oradbpackages').controller('oradbpackagesController', ['$scope',
 
     // Find existing oradbpackage
     $scope.findOne = function () {
+      console.log($stateParams);
       $scope.oradbpackage = OraDBPackages.get({
-        oradbpackageId: $stateParams.oradbpackageId
+        name: $stateParams.name
       });
     };
 

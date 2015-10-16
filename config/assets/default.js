@@ -18,6 +18,8 @@ module.exports = {
         'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
         'public/lib/angular-file-upload/angular-file-upload.js',
         'public/lib/angular-sanitize/angular-sanitize.js',
+        'public/lib/moment/moment.js',
+        'public/lib/angular-moment/angular-moment.js',
         'public/lib/ui-select/dist/select.js'
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']

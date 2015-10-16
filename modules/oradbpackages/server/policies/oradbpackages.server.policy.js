@@ -18,7 +18,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/1/packages',
       permissions: '*'
     }, {
-      resources: '/api/1/packages/:oradbpackageId',
+      resources: '/api/1/packages/:name',
       permissions: '*'
     }]
   }, {
@@ -27,7 +27,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/1/packages',
       permissions: ['get', 'post']
     }, {
-      resources: '/api/1/packages/:oradbpackageId',
+      resources: '/api/1/packages/:name',
       permissions: ['get']
     }]
   }, {
@@ -36,7 +36,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/1/packages',
       permissions: ['get']
     }, {
-      resources: '/api/1/packages/:oradbpackageId',
+      resources: '/api/1/packages/:name',
       permissions: ['get']
     }]
   }]);

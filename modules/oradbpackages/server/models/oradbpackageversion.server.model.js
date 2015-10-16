@@ -72,7 +72,7 @@ var OraDBPackageVersionSchema = new Schema({
   // publish
   created: {
     type: Date,
-    default: Date.now()
+    required: true
   }
 
 });

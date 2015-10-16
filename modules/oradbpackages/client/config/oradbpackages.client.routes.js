@@ -22,7 +22,7 @@ angular.module('oradbpackages').config(['$stateProvider',
         templateUrl: 'modules/oradbpackages/client/views/search-oradbpackages.client.view.html'
       })
       .state('oradbpackages.view', {
-        url: '/:oradbpackageId',
+        url: '/:name',
         templateUrl: 'modules/oradbpackages/client/views/view-oradbpackage.client.view.html'
       });
   }

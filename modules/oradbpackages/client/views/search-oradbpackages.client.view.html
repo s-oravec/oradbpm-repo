@@ -16,22 +16,15 @@
 
   <!-- todo: refactor and reuse -->
   <div class="list-group borderless-list">
-    <a ng-repeat="oradbpackage in oradbpackages" ui-sref="oradbpackages.view({oradbpackageId: oradbpackage._id})" class="list-group-item">
-      <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default pull-right">{{keyword}}</span>
-      <small class="list-group-item-text">
-        Created on
-        <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
-        by
-        <span ng-bind="oradbpackage.author"></span>
-      </small>
-      <h4 class="list-group-item-heading" ng-bind="oradbpackage.name"></h4>
-      <p class="list-group-item-text" ng-bind="oradbpackage.description"></p>
+    <a ng-repeat="oradbpackage in oradbpackages" ui-sref="oradbpackages.view({name: oradbpackage.name})" class="list-group-item">
+      <ora-db-package-list-item ng-model="oradbpackage">
+      </ora-db-package-list-item>
     </a>
   </div>
 
   <!-- TODO: CTA for download OraRBPM-CLI -->
   <!--<div class="alert alert-warning text-center" ng-if="oradbpackages.$resolved && !oradbpackages.length">
-    You have no packages, why don't you <a ui-sref="oradbpackages.create">create one</a>?
+    You have no packages, why don't you create one</a>?
   </div>-->
 
 </section>

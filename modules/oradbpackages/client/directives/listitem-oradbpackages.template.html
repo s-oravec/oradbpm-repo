@@ -1,0 +1,12 @@
+<div>
+  <span ng-repeat="keyword in oradbpackage.keywords" class="label label-default pull-right" style="margin-left: 2px">{{keyword}}</span>
+  <small class="list-group-item-text">
+    Created on
+    <span ng-bind="oradbpackage.time.created | date:'mediumDate'"></span>
+    by
+    <span ng-bind="oradbpackage.author"></span>
+  </small>
+  <h4 class="list-group-item-heading" ng-bind="oradbpackage.name"></h4>
+
+  <p class="list-group-item-text" ng-bind="oradbpackage.description"></p>
+</div>

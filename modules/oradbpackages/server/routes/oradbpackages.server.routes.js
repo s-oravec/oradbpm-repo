@@ -13,11 +13,11 @@ module.exports = function (app) {
     .post(oradbpackages.create);
 
   // Single oradbpackage routes
-  app.route('/api/1/packages/:oradbpackageId').all(oradbpackagesPolicy.isAllowed)
+  app.route('/api/1/packages/:name').all(oradbpackagesPolicy.isAllowed)
     .get(oradbpackages.read)
     .put(oradbpackages.update)
     .delete(oradbpackages.delete);
 
   // Finish by binding the oradbpackage middleware
-  app.param('oradbpackageId', oradbpackages.pkgByID);
+  app.param('name', oradbpackages.pkgByName);
 };
