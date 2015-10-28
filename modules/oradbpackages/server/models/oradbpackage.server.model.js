@@ -155,7 +155,6 @@ var OraDBPackageSchema = new Schema({
 });
 
 // fulltext index on name/description/keywords
-OraDBPackageSchema.plugin(textSearch);
 OraDBPackageSchema.index({
   name: 'text',
   description: 'text',
@@ -163,12 +162,6 @@ OraDBPackageSchema.index({
 });
 
 // unique name/version index
-OraDBPackageSchema.index(
-  {
-    name: 1
-  }, {
-    unique: true
-  }
-);
+OraDBPackageSchema.index({name: 1}, {unique: true});
 
 mongoose.model('OraDBPackage', OraDBPackageSchema);

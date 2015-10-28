@@ -11,7 +11,8 @@ var path = require('path'),
   _ = require('lodash'),
   OraDBPackage = mongooseAsync.model('OraDBPackage'),
   OraDBPackageVersion = mongooseAsync.model('OraDBPackageVersion'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+  debug = require('debug')('oradbpm:oradbpackages:ctrl');
 
 // TODO: refactor - move to utils
 var encodeKey = function (key) {
@@ -140,11 +141,11 @@ exports.create = function (req, res) {
         //1.2.1. user not in package.maintainers -> error
         if (pkg.maintainers.indexOf(req.user.getUsernameEmail()) === -1) {
           throw new ServerException('User ' + req.user.getUsernameEmail() + ' not in maintainers list.');
-        //1.2.2. user is one of maintainers
         } else {
+          //1.2.2. user is one of maintainers
           //1.2.2.1. create pacakge version
           return createPackageVersion(req)
-            .then(function(pkgVersion) {
+            .then(function (pkgVersion) {
               //1.2.2.2.2. succeeds -> update package
               return updatePackage(req, pkg, pkgVersion);
             });
@@ -215,26 +216,35 @@ exports.list = function (req, res) {
 
   if (!!req.query.q) {
 
-    OraDBPackage.textSearch(req.query.q, {lean: true}, function (err, output) {
+    debug('fulltext search with query', req.query.q);
+
+    OraDBPackage.find(
+      {$text: {$search: req.query.q}},
+      {score: {$meta: "textScore"}}
+    )
+      .sort({score: {$meta: 'textScore'}})
+      .exec(function (err, results) {
         if (err) {
+          console.log(err);
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
           });
         } else {
-          res.json(_.map(output.results, 'obj'));
+          debug('results', results);
+          res.json(results);
         }
-      }
-    );
+      });
 
   } else {
 
-    OraDBPackage.find().sort('-created').exec(function (err, pkgs) {
+    OraDBPackage.find().sort('-created').exec(function (err, results) {
       if (err) {
+        console.log(err);
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        res.json(pkgs);
+        res.json(results);
       }
     });
 
@@ -245,7 +255,7 @@ exports.list = function (req, res) {
  * pkg middleware
  */
 exports.pkgByName = function (req, res, next, name) {
-  OraDBPackage.findOne({name : name}).exec(function (err, pkg) {
+  OraDBPackage.findOne({name: name}).exec(function (err, pkg) {
     if (err) {
       return next(err);
     } else if (!pkg) {
