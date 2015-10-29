@@ -61,6 +61,8 @@ var OraDBPackageSchema = new Schema({
     }
   ],
 
+  versionSubdocuments: {},
+
   // array of "username <email>"
   maintainers: [String],
 

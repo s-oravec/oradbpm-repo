@@ -28,13 +28,8 @@ var OraDBPackageVersionSchema = new Schema({
     required: 'Version cannot be empty'
   },
 
-  // git url
-  versionUrl: {
-    type: String,
-    trim: true,
-    default: '',
-    required: 'Package version url is required'
-  },
+  // array of "username <email>"
+  maintainers: [String],
 
   // license
   license: {

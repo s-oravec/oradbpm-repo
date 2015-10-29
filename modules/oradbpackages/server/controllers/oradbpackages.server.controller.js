@@ -34,10 +34,10 @@ var createPackageVersion = function (req) {
 
   var pkgVersion = new OraDBPackageVersion();
 
+  // TODO: maintainers
+  pkgVersion.maintainers = [req.user.getUsernameEmail()];
   pkgVersion.name = req.body.name;
   pkgVersion.version = req.body.version;
-  // assumes it is already in git repo and tagged accordingly
-  pkgVersion.versionUrl = req.body.repository.url + '/tags/' + req.body.version;
   pkgVersion.license = req.body.license;
   pkgVersion.keywords = req.body.keywords;
   pkgVersion.notes = req.body.notes;
@@ -45,17 +45,19 @@ var createPackageVersion = function (req) {
   pkgVersion.publisher = req.user.getUsernameEmail();
   pkgVersion.created = Date.now();
 
-  var promise = Bluebird.resolve();
+  return Bluebird.resolve(pkgVersion);
 
-  return pkgVersion.saveAsync()
-    .then(function (result) {
-      return result[0];
-    });
+  // save package version only as subdocument of package
+  //return pkgVersion.saveAsync()
+  //  .then(function (result) {
+  //    return result[0];
+  //  });
 };
 
 var createPackage = function (req, pkgVersion) {
 
   var pkg = new OraDBPackage();
+  var encodedVersion = encodeKey(req.body.version);
 
   pkg.name = req.body.name;
   pkg.description = req.body.description;
@@ -65,12 +67,14 @@ var createPackage = function (req, pkgVersion) {
   pkg.versions = [
     req.body.version
   ];
+  pkg.versionSubdocuments = {};
+  pkg.versionSubdocuments[encodedVersion] = pkgVersion;
   pkg.maintainers = [req.user.getUsernameEmail()];
   pkg.time = {
     modified: pkgVersion.created,
     created: pkgVersion.created
   };
-  pkg.time[encodeKey(req.body.version)] = pkgVersion.created;
+  pkg.time[encodedVersion] = pkgVersion.created;
   pkg.author = req.user.getFullnameEmail();
   pkg.authorId = req.user._id;
   // TODO: validate repository type & url
@@ -90,11 +94,22 @@ var createPackage = function (req, pkgVersion) {
 
 var updatePackage = function (req, pkg, pkgVersion) {
 
+  var encodedVersion = encodeKey(req.body.version);
+
+  if (pkg.versions.indexOf(req.body.version) === -1) {
+    pkg.versions.push(req.body.version);
+    pkg.versions.sort(semver.compare);
+  } else {
+    return Bluebird.reject({
+      message: 'Package version already exists.'
+    });
+  }
   pkg.description = req.body.description;
-  pkg.versions.push(req.body.version);
-  pkg.versions.sort(semver.compare);
+
+  pkg.versionSubdocuments[encodedVersion] = pkgVersion;
+  pkg.markModified('versionSubdocuments');
   pkg.time.modified = pkgVersion.created;
-  pkg.time[encodeKey(req.body.version)] = pkgVersion.created;
+  pkg.time[encodedVersion] = pkgVersion.created;
   pkg.markModified('time');
   pkg.tags.latest = req.body.version;
   pkg.markModified('tags');
@@ -159,7 +174,7 @@ exports.create = function (req, res) {
       console.log(err);
       console.log(err.message);
       return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
+        message: err.message || errorHandler.getErrorMessage(err)
       });
     });
 }
