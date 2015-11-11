@@ -28,6 +28,12 @@ var OraDBPackageSchema = new Schema({
     required: 'Description name is required'
   },
 
+  lang: {
+    type: String,
+    enum: ['plsql','sqlplus'],
+    required: 'Package language is required.'
+  },
+
   // stable, beta, ...
   tags: {
     // TODO: srsly?
@@ -61,7 +67,9 @@ var OraDBPackageSchema = new Schema({
     }
   ],
 
-  versionSubdocuments: {},
+  packageVersionDefinitions: {},
+
+  dependencies: {},
 
   // array of "username <email>"
   maintainers: [String],

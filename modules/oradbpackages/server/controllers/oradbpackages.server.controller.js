@@ -10,7 +10,7 @@ var path = require('path'),
   mongooseAsync = Bluebird.promisifyAll(require("mongoose")),
   _ = require('lodash'),
   OraDBPackage = mongooseAsync.model('OraDBPackage'),
-  OraDBPackageVersion = mongooseAsync.model('OraDBPackageVersion'),
+  // OraDBPackageVersion = mongooseAsync.model('OraDBPackageVersion'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   debug = require('debug')('oradbpm:oradbpackages:ctrl');
 
@@ -32,26 +32,22 @@ var ServerException = function (message) {
 
 var createPackageVersion = function (req) {
 
-  var pkgVersion = new OraDBPackageVersion();
+  var pkgVersion = {};
 
   // TODO: maintainers
   pkgVersion.maintainers = [req.user.getUsernameEmail()];
   pkgVersion.name = req.body.name;
   pkgVersion.version = req.body.version;
+  pkgVersion.lang = req.body.language;
   pkgVersion.license = req.body.license;
   pkgVersion.keywords = req.body.keywords;
   pkgVersion.notes = req.body.notes;
   pkgVersion.publisherId = req.user._id;
   pkgVersion.publisher = req.user.getUsernameEmail();
   pkgVersion.created = Date.now();
+  pkgVersion.dependencies = req.body.dependencies;
 
   return Bluebird.resolve(pkgVersion);
-
-  // save package version only as subdocument of package
-  //return pkgVersion.saveAsync()
-  //  .then(function (result) {
-  //    return result[0];
-  //  });
 };
 
 var createPackage = function (req, pkgVersion) {
@@ -61,14 +57,15 @@ var createPackage = function (req, pkgVersion) {
 
   pkg.name = req.body.name;
   pkg.description = req.body.description;
+  pkg.lang = req.body.language;
   pkg.tags = {
     latest: req.body.version
   };
   pkg.versions = [
     req.body.version
   ];
-  pkg.versionSubdocuments = {};
-  pkg.versionSubdocuments[encodedVersion] = pkgVersion;
+  pkg.packageVersionDefinitions = {};
+  pkg.packageVersionDefinitions[encodedVersion] = pkgVersion;
   pkg.maintainers = [req.user.getUsernameEmail()];
   pkg.time = {
     modified: pkgVersion.created,
@@ -86,6 +83,8 @@ var createPackage = function (req, pkgVersion) {
   pkg.license = req.body.license;
   pkg.keywords = req.body.keywords;
   pkg.notes = req.body.notes;
+  pkg.dependencies = pkgVersion.dependencies;
+  pkg.markModified('dependencies');
 
   console.log(pkg);
 
@@ -104,10 +103,11 @@ var updatePackage = function (req, pkg, pkgVersion) {
       message: 'Package version already exists.'
     });
   }
-  pkg.description = req.body.description;
+  pkg.description = req.body.dequeuescription;
+  pkg.lang = req.body.language;
 
-  pkg.versionSubdocuments[encodedVersion] = pkgVersion;
-  pkg.markModified('versionSubdocuments');
+  pkg.packageVersionDefinitions[encodedVersion] = pkgVersion;
+  pkg.markModified('packageVersionDefinitions');
   pkg.time.modified = pkgVersion.created;
   pkg.time[encodedVersion] = pkgVersion.created;
   pkg.markModified('time');
@@ -122,6 +122,8 @@ var updatePackage = function (req, pkg, pkgVersion) {
   pkg.license = req.body.license;
   pkg.keywords = req.body.keywords;
   pkg.notes = req.body.notes;
+  pkg.dependencies = pkgVersion.dependencies;
+  pkg.markModified('dependencies');
 
   console.log(pkg);
 
@@ -134,6 +136,8 @@ var updatePackage = function (req, pkg, pkgVersion) {
 exports.create = function (req, res) {
 
   var promise = Bluebird.resolve();
+
+  // console.log(req.body);
 
   //scenario
   //1. get package by name

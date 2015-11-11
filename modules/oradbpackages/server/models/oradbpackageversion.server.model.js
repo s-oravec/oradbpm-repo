@@ -28,6 +28,16 @@ var OraDBPackageVersionSchema = new Schema({
     required: 'Version cannot be empty'
   },
 
+  // programming language
+  lang: {
+    type: String,
+    enum: ['plsql','sqlplus'],
+    required: 'Package language is required.'
+  },
+
+  // dependencies
+  dependencies: {},
+
   // array of "username <email>"
   maintainers: [String],
 
