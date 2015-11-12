@@ -10,7 +10,7 @@ var path = require('path'),
   mongooseAsync = Bluebird.promisifyAll(require("mongoose")),
   _ = require('lodash'),
   OraDBPackage = mongooseAsync.model('OraDBPackage'),
-  // OraDBPackageVersion = mongooseAsync.model('OraDBPackageVersion'),
+// OraDBPackageVersion = mongooseAsync.model('OraDBPackageVersion'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   debug = require('debug')('oradbpm:oradbpackages:ctrl');
 
@@ -150,7 +150,7 @@ exports.create = function (req, res) {
       if (pkg === null) {
         //1.1.1. create package version
         return createPackageVersion(req)
-          //1.1.2. create package
+        //1.1.2. create package
           .then(function (pkgVersion) {
             return createPackage(req, pkgVersion);
           });
@@ -240,7 +240,7 @@ exports.list = function (req, res) {
     OraDBPackage.find(
       {$text: {$search: req.query.q}},
       {score: {$meta: "textScore"}}
-    )
+      )
       .sort({score: {$meta: 'textScore'}})
       .exec(function (err, results) {
         if (err) {
@@ -279,7 +279,7 @@ exports.pkgByName = function (req, res, next, name) {
       return next(err);
     } else if (!pkg) {
       return res.status(404).send({
-        message: 'No package with that name has been found'
+        message: 'Package \'' + name + '\' is not in registry.'
       });
     }
     req.pkg = pkg;
