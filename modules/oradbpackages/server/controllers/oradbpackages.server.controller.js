@@ -14,7 +14,9 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   debug = require('debug')('oradbpm:oradbpackages:ctrl');
 
-// TODO: refactor - move to utils
+
+
+// TODO: refactor - move to common utils
 var encodeKey = function (key) {
   return key.replace(/\./g, '\uff0e').replace(/\$/g, '\uff04').replace(/\\/g, '\\\\');
 };
@@ -32,14 +34,15 @@ var ServerException = function (message) {
 
 var createPackageVersion = function (req) {
 
+  //
   var pkgVersion = {};
 
   // TODO: maintainers
-  pkgVersion.maintainers = [req.user.getUsernameEmail()];
   pkgVersion.name = req.body.name;
   pkgVersion.version = req.body.version;
   pkgVersion.lang = req.body.language;
   pkgVersion.license = req.body.license;
+  pkgVersion.description = req.body.description;
   pkgVersion.keywords = req.body.keywords;
   pkgVersion.notes = req.body.notes;
   pkgVersion.publisherId = req.user._id;

@@ -67,6 +67,7 @@ var OraDBPackageSchema = new Schema({
     }
   ],
 
+  // oradbpm-package-schema
   packageVersionDefinitions: {},
 
   dependencies: {},

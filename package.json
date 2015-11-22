@@ -46,6 +46,7 @@
     "multer": "0.1.8",
     "node-pre-gyp": "0.6.4",
     "nodemailer": "^1.4.0",
+    "oradbpm-package-schema": "0.0.1",
     "passport": "~0.2.2",
     "passport-facebook": "^2.0.0",
     "passport-github": "~0.1.5",

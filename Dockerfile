@@ -1,9 +1,8 @@
 FROM node:0.10
-
-MAINTAINER Matthias Luebken, matthias@catalyst-zero.com
+MAINTAINER Štefan Oravec, stefan.oravec@me.com
 
 # Install gem sass for  grunt-contrib-sass
-RUN apt-get update -qq && apt-get install -y build-essential
+RUN apt-get update -qq && apt-get install -y build-essential apt-utils
 RUN apt-get install -y ruby
 RUN gem install sass
 
@@ -32,3 +31,14 @@ ENV NODE_ENV development
 # Port 35729 for livereload
 EXPOSE 3000 35729
 CMD ["grunt"]
+
+#/usr/bin/ld: cannot find -lkrb5
+#/usr/bin/ld: cannot find -lgssapi_krb5
+
+#npm WARN peerDependencies The peer dependency kerberos@~0.0 included from mongodb-core will no
+#npm WARN peerDependencies longer be automatically installed to fulfill the peerDependency
+#npm WARN peerDependencies in npm 3+. Your application will need to depend on it explicitly.
+
+#npm WARN peerDependencies The peer dependency istanbul@0.x.x included from grunt-mocha-istanbul will no
+#npm WARN peerDependencies longer be automatically installed to fulfill the peerDependency
+#npm WARN peerDependencies in npm 3+. Your application will need to depend on it explicitly.
